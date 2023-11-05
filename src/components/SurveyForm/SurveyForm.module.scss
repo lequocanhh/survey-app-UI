@@ -1,0 +1,145 @@
+.survey-form{
+    background-color: #F4F4F9;
+    height: 100%;
+    padding-bottom: 30px;
+}
+
+.section{
+    margin: auto;
+    width: 50%;
+
+    .survey-form-top{
+        background-color: white;
+        border-top: 8px solid rgb(103, 58, 183);
+        border-radius: 8px;
+        padding: 30px 25px;
+        text-transform: capitalize;
+
+        .survey-form-title{
+            box-sizing: border-box;
+            font-family: 'Google sans', Roboto,Arial, sans-serif;
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 135%;
+            width: 100%;
+            border: none;
+            outline: none;
+            border-bottom: 1px solid #F4F4F9;
+            color: black;
+            height: 35px;
+        }
+
+        .survey-form-desc{
+            box-sizing: border-box;
+            font-family: 'Google sans', Roboto,Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 40px;
+            line-height: 135%;
+            width: 100%;
+            border: none;
+            outline: none;
+            border-bottom: 1px solid #F4F4F9;
+            color: black;
+            height: 20px;
+        }
+    }
+
+    .add-question{
+        background-color: white;
+        border-radius: 8px;
+        padding: 25px 22px;
+        text-transform: capitalize;
+        display: flex;
+        flex-direction: column;
+        padding-top: 0;
+        width: 90%;
+        margin-left: 10px;
+
+        .add-question-top{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2px;
+
+            .select{
+                height: 40px;
+                width: 230px;
+                border: 0.5px solid;
+                padding: 5px 15px;
+                color: black;
+                margin-left: 10px;
+                margin-right: 10px;
+                border: 1.5px solid #F4F4F9;
+                border-radius: 4px;
+                background-color: transparent;
+            }
+        }
+
+        .question{
+            box-sizing: border-box;
+            margin-top: 10px;
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            flex: 1;
+            line-height: 40px;
+            width: 40%;
+            border: none;
+            color: black;
+            height: 40px;
+            margin-right: 10px;
+            line-height: 10px;
+            padding: 10px;
+
+            &:focus{
+                border-bottom: 1px solid rgb(103, 58, 183);
+                background-color: #F4F4F9;
+            }
+        }
+    }
+
+    .add-question-body{
+        display: flex;
+        align-items: center;
+
+        .text-input{
+            outline: none;
+            border: none;
+            height: 40px;
+            width: 490px;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: .2px;
+            color: #202124;
+
+            &:focus{
+                border-bottom: 1.5px solid rgb(103, 58, 183);
+            }
+        }
+    }
+
+    .add-question-bottom{
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .add-footer{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .add-question-bottom{
+        margin-top: 12px;
+        border-top: 1px solid rgba(118, 118, 118, 0.3);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .add-border{
+        border-left: 6px solid #4285f4;
+    }
+}

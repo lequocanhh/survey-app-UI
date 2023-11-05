@@ -1,9 +1,10 @@
+import SurveyForm from "../../components/SurveyForm/SurveyForm"
 
 
 const Form = () => {
   return (
     <div>
-        hello
+        <SurveyForm/>
     </div>
   )
 }
