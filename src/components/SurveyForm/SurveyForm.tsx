@@ -1,25 +1,36 @@
 import classNames from 'classnames/bind';
 import styles from './SurveyForm.module.scss'
-import { Accordion, AccordionDetails, AccordionSummary, Button, FormControlLabel, Icon, IconButton, MenuItem, Radio, Select, Switch, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Button, IconButton, MenuItem, Radio, Select, Switch } from '@mui/material';
+import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { MoreVert } from '@mui/icons-material';
+import { AddCircleOutline, MoreVert } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const cx = classNames.bind(styles);
 
+type Options = {
+    title: string;
+    selected: boolean;
+  };
+
+type Question = {
+    title: string;
+    options: Options[];
+    required: boolean;
+    open: boolean;
+  };
+
 const SurveyForm = () => {
-    const [questions, setQuestion] = useState([
+    const [questions, setQuestion] = useState<Question[]>([
         {
                 title: "this is question 1",
                 options: [
-                    {title: "abc"},
-                    {title: "abc2"},
-                    {title: "abc3"},
-                    {title: "abc4"}
+                    {title: "abc", selected: true,},
+                    {title: "abc2", selected: false,},
+                    {title: "abc3", selected: false,},
+                    {title: "abc4", selected: false,}
                 ],
-                type: 'radio',
                 required: true,
                 open: true
             } 
@@ -52,7 +63,10 @@ const SurveyForm = () => {
     const handleAddOption = (indexQuestion: number) => {
         const newOptionOfQuestion = [...questions]
         if(newOptionOfQuestion[indexQuestion].options.length < 5){
-            newOptionOfQuestion[indexQuestion].options.push({title: `Option ${newOptionOfQuestion[indexQuestion].options.length + 1}`})
+            newOptionOfQuestion[indexQuestion].options.push({
+                title: `Option ${newOptionOfQuestion[indexQuestion].options.length + 1}`,
+                selected: false
+            })
             setQuestion(newOptionOfQuestion)
             console.log(newOptionOfQuestion);
             
@@ -63,7 +77,7 @@ const SurveyForm = () => {
 
     const handleCopyQuestion = (indexQuestion: number) => {
         const copiedQuestion = [...questions]
-        const newQuestion = copiedQuestion[indexQuestion]
+        const newQuestion = {...copiedQuestion[indexQuestion]}
         setQuestion([...questions, newQuestion])
     }
 
@@ -75,10 +89,42 @@ const SurveyForm = () => {
         }
     }
 
+    const handleRequiredQuestion = (indexQuestion: number) => {
+        const questionRequired = [...questions]
+        questionRequired[indexQuestion].required = !questionRequired[indexQuestion].required;
+        // console.log(questionRequired[indexQuestion].required+" "+indexQuestion );
+        console.log(indexQuestion);
+        
+        
+        setQuestion(questionRequired)
+    }
+
+    const handleAddMoreQuestion = () => {
+        const newQuestion: Question = {
+            title: "Question",
+            options: [{title: "option 1", selected: false}],
+            open: true,
+            required: false
+        }
+        setQuestion([...questions, newQuestion]);
+    }
+
+    const handleChangeSelectedOption = (indexQuestion: number, indexOption: number) => {
+        const updateQuestion = [...questions]
+        const selectedQuestion = updateQuestion[indexQuestion]
+
+        selectedQuestion.options.forEach((option, index) => {
+            option.selected = index === indexOption ? true : false;
+        })
+        setQuestion(updateQuestion)
+    }
 
     
 
-    
+    useEffect(() => {
+        console.log(questions);
+        
+    }, [questions])
 
     const questionUI = () =>{
         return questions.map((question, i) => {
@@ -98,7 +144,7 @@ const SurveyForm = () => {
                                 {question.options.map((option, i) => (
                                     <div key={i}>
                                         <div style={{display: "flex"}}>
-                                            <FormControlLabel sx={{marginLeft: "5px", marginBottom: "5px"}} disabled control={<input type={question.type} color='primary' style={{marginRight: "3px"}} required={question.required}/>}
+                                            <FormControlLabel sx={{marginLeft: "5px", marginBottom: "5px"}} disabled control={<input type="radio" color='primary' style={{marginRight: "3px"}} required={question.required}/>}
                                             label={
                                                 <Typography sx={{
                                                     fontSize: "13px",
@@ -124,17 +170,22 @@ const SurveyForm = () => {
                             <div className={cx('add-question-top')}>
                                 <input onChange={(e) => handleChangeQuestion(e.target.value, i)} type='text' className={cx('question')} placeholder='Question' value={question.title}/>
                                 <Select className={cx('select')} style={{ color: "#5f6368", fontSize: "13px" }}>
-                                    <MenuItem id='radio' value='Radio'><Radio style={{marginRight: "10px", color: "#70757a"}}/>Multiple Choice</MenuItem>
+                                    <MenuItem id='radio' value='radio'><Radio style={{marginRight: "10px", color: "#70757a"}}/>Multiple Choice</MenuItem>
                                 </Select>
                             </div>
-                        {/* </AccordionDetails>
-                    </div> */}
 
                     
                 
                         {question.options.map((option, j) => (
                             <div className={cx('add-question-body')} key={j}>
-                                <input type='radio' style={{marginRight: "10px"}}/>
+                                <Radio
+                                    sx={{marginRight: "10px"}}
+                                    checked={option.selected}
+                                    onChange={() => handleChangeSelectedOption(i, j)}
+                                    value="a"
+                                    name="radio-buttons"
+                                    inputProps={{ 'aria-label': 'A' }}
+/>
                                 <div>
                                     <input onChange={(e) => handleChangeOption(e.target.value, i ,j)} type='text' className={cx('text-input')} placeholder='option' value={option.title}/>
                                 </div>
@@ -167,7 +218,7 @@ const SurveyForm = () => {
                                 </IconButton>
                                 <IconButton>
                                     <span style={{color: "#5f6368", fontSize: "13px"}}>Required</span>
-                                    <Switch name='checkedA' color='primary' />
+                                    <Switch  onClick={() => handleRequiredQuestion(i)} name='checkedA' color='primary' checked={question.required}/>
                                 </IconButton>
                                 <IconButton>
                                     <MoreVert/>
@@ -195,6 +246,7 @@ const SurveyForm = () => {
                 </div>
             </div>
             {questionUI()}
+            <Button onClick={handleAddMoreQuestion} variant="contained" endIcon={<AddCircleOutline/>} sx={{marginTop: "10px"}}>Add Question</Button>
         </div>
     </div>
     </div>
