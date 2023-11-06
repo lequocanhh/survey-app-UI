@@ -15,7 +15,7 @@ const CloseQuestion = ({ question, indexQuestion }: Prop) => {
     <div className={cx("saved_question")}>
       <Typography
         sx={{
-          fontSize: "15px",
+          fontSize: "17px",
           fontWeight: "400",
           letterSpacing: ".1px",
           lineHeight: "24px",
@@ -43,7 +43,7 @@ const CloseQuestion = ({ question, indexQuestion }: Prop) => {
               label={
                 <Typography
                   sx={{
-                    fontSize: "13px",
+                    fontSize: "15px",
                     fontWeight: "400",
                     letterSpacing: ".2px",
                     lineHeight: "20px",

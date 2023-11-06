@@ -21,11 +21,7 @@ const Option = ({
   questions,
   setQuestion,
 }: Props) => {
-  console.log();
-
   const handleChangeSelectedOption = () => {
-    console.log(indexQuestion);
-
     setQuestion((prevQuestions) =>
       prevQuestions.map((question, questionIndex) => ({
         ...question,
@@ -55,7 +51,6 @@ const Option = ({
     if (removeOption[indexQuestion].options.length > 1) {
       removeOption[indexQuestion].options.splice(indexOption, 1);
       setQuestion(removeOption);
-      console.log(removeOption);
     }
   };
 
