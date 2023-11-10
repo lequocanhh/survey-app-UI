@@ -31,9 +31,7 @@ const ExpandQuestion = ({
     const newOptionOfQuestion = [...questions];
     if (newOptionOfQuestion[indexQuestion].options.length < 5) {
       newOptionOfQuestion[indexQuestion].options.push({
-        title: `Option ${
-          newOptionOfQuestion[indexQuestion].options.length + 1
-        }`,
+        title:"",
         selected: false,
       });
       setQuestion(newOptionOfQuestion);
@@ -44,12 +42,12 @@ const ExpandQuestion = ({
 
   return (
     <AccordionDetails className={cx("add-question")}>
-      <div className={cx("add-question-top")}>
+      <div key={indexQuestion} className={cx("add-question-top")}>
         <input
           onChange={(e) => handleChangeQuestion(e.target.value)}
           type="text"
           className={cx("question")}
-          placeholder="Question"
+          placeholder="Question has no title"
           value={question.title}
         />
       </div>
