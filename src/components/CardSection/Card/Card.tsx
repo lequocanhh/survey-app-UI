@@ -14,9 +14,10 @@ import Popover from "@mui/material/Popover";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
-import { useActionStore } from "../../../store/store";
+import { useActionStore, useSurveyCardStore } from "../../../store/store";
 import { EDIT } from "../../../constants/constant";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +29,7 @@ type Props = {
 const Card = ({ survey, index }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { setAction } = useActionStore();
+  const { setSurveyCard } = useSurveyCardStore();
   const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
@@ -47,6 +49,19 @@ const Card = ({ survey, index }: Props) => {
     setAction(EDIT);
     navigate(`form/edit/${survey.id}`);
   };
+
+  const handleDeleteSurvey = async(event) => {
+    event.stopPropagation();
+    try {
+      const response = await axios.delete(`http://localhost:8080/api/v1/survey/${survey.id}`)
+      if(response.data.status === 200){
+        alert("delete survey successfully")
+          setSurveyCard([]);
+      }
+    } catch (error) {
+        console.log(error);
+    }
+  }
 
   return (
     <div key={index} className={cx("container")}>
@@ -89,7 +104,7 @@ const Card = ({ survey, index }: Props) => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton
+                    <ListItemButton onClick={handleDeleteSurvey}
                       sx={{
                         "&:hover": {
                           backgroundColor: "#c22424",

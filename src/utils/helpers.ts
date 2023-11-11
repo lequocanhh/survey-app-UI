@@ -1,5 +1,6 @@
-import { useAuthStore } from "../store/store";
+
 import { Question, SurveyProp } from "../types/survey";
+import { User } from "../types/user";
 
 
 export const filterGetSelectedId = (questions: Question[]): string[] => {
@@ -14,8 +15,7 @@ export const filterGetSelectedId = (questions: Question[]): string[] => {
       return selectedId
 }
 
-export const filterDataToCreateSurvey = (surveyInfo: SurveyProp, questions: Question[]) => {
-  const {user} = useAuthStore()
+export const filterDataToCreateSurvey = (surveyInfo: SurveyProp, questions: Question[], user: User) => {
   return {
     created_by: user.id,
     title: surveyInfo.title,

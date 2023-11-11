@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { Question, SurveyProp } from "../../types/survey";
-import { useActionStore, useDoForm } from "../../store/store";
+import { useActionStore, useAuthStore, useDoForm } from "../../store/store";
 import QuestionItem from "./QuestionItem/QuestionItem";
 import { AddCircleOutline } from "@mui/icons-material";
 import {
@@ -21,7 +21,9 @@ const cx = classNames.bind(styles);
 const SurveyForm = () => {
   const { survey } = useDoForm();
   const { action } = useActionStore();
+  const {user} = useAuthStore()
   const navigate = useNavigate();
+console.log(action);
 
   const [surveyInfo, setSurveyInfo] = useState<SurveyProp>({
     id: "",
@@ -112,8 +114,7 @@ const SurveyForm = () => {
   };
 
   const handleSubmitCreateSurvey = async (): Promise<void> => {
-    const data = filterDataToCreateSurvey(surveyInfo, questions);
-    console.log(data);
+    const data = filterDataToCreateSurvey(surveyInfo, questions, user);
 
     try {
       const response = await axios.post(
@@ -131,7 +132,19 @@ const SurveyForm = () => {
 
   const handleSubmitUpdateSurvey = async (): Promise<void> => {
     const data = filterDataToUpdateSurvey(surveyInfo, questions);
-    console.log(data);
+    
+    try {
+      const response = await axios.put(
+        "http://localhost:8080/api/v1/survey/edit",
+        JSON.stringify(data)
+      );
+      if (response.data.status === 200) {
+        alert("Update survey successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
     
   }
 
