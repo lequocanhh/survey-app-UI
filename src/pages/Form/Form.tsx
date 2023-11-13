@@ -13,8 +13,13 @@ const Form = () => {
 
   const getSurveyDetail = async (param: string) => {
     try {
+      const token = localStorage.getItem("token") ?? "";
       const response = await axios.get(
-        `http://localhost:8080/api/v1/survey/${param}/${id}`
+        `http://localhost:8080/api/v1/survey/${param}/${id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       const { data } = await response.data;
       

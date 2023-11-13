@@ -18,6 +18,7 @@ import { useActionStore, useSurveyCardStore } from "../../../store/store";
 import { EDIT } from "../../../constants/constant";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +30,7 @@ type Props = {
 const Card = ({ survey, index }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { setAction } = useActionStore();
-  const { setSurveyCard } = useSurveyCardStore();
+  const { surveyInfo, setSurveyCard } = useSurveyCardStore();
   const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
@@ -50,18 +51,34 @@ const Card = ({ survey, index }: Props) => {
     navigate(`form/edit/${survey.id}`);
   };
 
-  const handleDeleteSurvey = async(event) => {
+  const handleOpenStatisticPage = (event) => {
+    event.stopPropagation();
+    navigate(`form/statistic/${survey.id}`)
+  }
+
+  const handleDeleteSurvey = async (event) => {
     event.stopPropagation();
     try {
-      const response = await axios.delete(`http://localhost:8080/api/v1/survey/${survey.id}`)
-      if(response.data.status === 200){
-        alert("delete survey successfully")
-          setSurveyCard([]);
+      const token = localStorage.getItem("token") ?? "";
+      const response = await axios.delete(
+        `http://localhost:8080/api/v1/survey/${survey.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      if (response.data.status === 200) {
+        alert("delete survey successfully");
+        setSurveyCard(
+          surveyInfo.filter((item) => {
+            return item.id !== survey.id;
+          })
+        );
       }
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div key={index} className={cx("container")}>
@@ -104,7 +121,16 @@ const Card = ({ survey, index }: Props) => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton onClick={handleDeleteSurvey}
+                    <ListItemButton onClick={handleOpenStatisticPage}>
+                      <ListItemIcon>
+                        <BarChartIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Statistic" />
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      onClick={handleDeleteSurvey}
                       sx={{
                         "&:hover": {
                           backgroundColor: "#c22424",

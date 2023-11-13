@@ -4,7 +4,7 @@ import Form from "./pages/Form/Form"
 import Login from "./components/Login/Login"
 import SignUp from "./components/SignUp/SignUp"
 import PrivateRoutes from "./utils/PrivateRoutes"
-
+import Statistic from "./pages/Statistic/Statistic"
 
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
               <Route element={<Form/>} path="/do-form/:id"/>
               <Route element={<Form />} path="form/edit/:id"/>
             </Route>
+              <Route element={<Statistic />} path="/form/statistic/:id"/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<SignUp/>}/>
           </Routes>  

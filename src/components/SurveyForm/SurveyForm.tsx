@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./SurveyForm.module.scss";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { Question, SurveyProp } from "../../types/survey";
@@ -8,6 +8,7 @@ import { useActionStore, useAuthStore, useDoForm } from "../../store/store";
 import QuestionItem from "./QuestionItem/QuestionItem";
 import { AddCircleOutline } from "@mui/icons-material";
 import {
+  checkIfAllValidated,
   filterDataToCreateSurvey,
   filterDataToUpdateSurvey,
   filterGetSelectedId,
@@ -15,16 +16,20 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CREATE, DO, EDIT } from "../../constants/constant";
+import BasicPopover from "../shares/Popover";
 
 const cx = classNames.bind(styles);
 
 const SurveyForm = () => {
   const { survey } = useDoForm();
   const { action } = useActionStore();
-  const {user} = useAuthStore()
+  const { user } = useAuthStore();
   const navigate = useNavigate();
-console.log(action);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
+  const [surveyValidationErrors, setSurveyValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const [surveyInfo, setSurveyInfo] = useState<SurveyProp>({
     id: "",
     title: "",
@@ -99,10 +104,17 @@ console.log(action);
       survey_id: survey.id,
       ids: filterGetSelectedId(questions),
     };
+    console.log(updatedRecord);
+    
     try {
+      const token = localStorage.getItem("token") ?? "";
       const response = await axios.post(
         "http://localhost:8080/api/v1/survey/do-form",
-        JSON.stringify(updatedRecord)
+        JSON.stringify(updatedRecord),{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       if (response.data.status === 200) {
         alert("Completed survey");
@@ -113,13 +125,20 @@ console.log(action);
     }
   };
 
-  const handleSubmitCreateSurvey = async (): Promise<void> => {
+  const handleSubmitCreateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+    if(!validated) return;
     const data = filterDataToCreateSurvey(surveyInfo, questions, user);
 
     try {
+      const token = localStorage.getItem("token") ?? "";
       const response = await axios.post(
         "http://localhost:8080/api/v1/survey/create",
-        JSON.stringify(data)
+        JSON.stringify(data), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       if (response.data.status === 200) {
         alert("Create survey successfully");
@@ -130,13 +149,21 @@ console.log(action);
     }
   };
 
-  const handleSubmitUpdateSurvey = async (): Promise<void> => {
+  const handleSubmitUpdateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+    if(!validated) return;
     const data = filterDataToUpdateSurvey(surveyInfo, questions);
-    
+
     try {
+      const token = localStorage.getItem("token") ?? "";
+
       const response = await axios.put(
         "http://localhost:8080/api/v1/survey/edit",
-        JSON.stringify(data)
+        JSON.stringify(data), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       if (response.data.status === 200) {
         alert("Update survey successfully");
@@ -145,8 +172,7 @@ console.log(action);
     } catch (error) {
       console.log(error);
     }
-    
-  }
+  };
 
   useEffect(() => {
     if (action === DO || action === EDIT) {
@@ -181,6 +207,7 @@ console.log(action);
                 onChange={(e) => handleSurveyInfo(e)}
                 type="text"
               />
+
               <input
                 className={cx("survey-form-desc")}
                 placeholder="Form description"
@@ -193,6 +220,7 @@ console.log(action);
             </div>
           </div>
           {questionUI()}
+
           {action === CREATE && (
             <div className={cx("btn-bottom")}>
               {" "}
@@ -245,6 +273,11 @@ console.log(action);
             </div>
           )}
         </div>
+        <BasicPopover
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          surveyValidationErrors={surveyValidationErrors}
+        />
       </div>
     </div>
   );
