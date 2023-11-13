@@ -11,14 +11,15 @@ type Authen = {
     checkAdmin: (isAdmin: boolean) => void
 }
 
-
-
 type SurveyCard = {
     surveyInfo: SurveyInfo[],
     setSurveyCard: (data: SurveyInfo[]) => void
-    
 }
 
+type SurveyIndividual = {
+    surveyInvidual: SurveyInfo[],
+    setSurveyIndividual: (data: SurveyInfo[]) => void
+}
 
 type DoSurvey = {
     survey: Survey,
@@ -39,6 +40,10 @@ export const useAuthStore = create<Authen>((set) => ({
     checkAdmin: (isAdmin: boolean) => set({ isAdmin })
 }))
 
+export const useSurveyIndividualStore = create<SurveyIndividual>((set) => ({
+    surveyInvidual: [] as SurveyInfo[],
+    setSurveyIndividual: (data: SurveyInfo[]) => set({ surveyInvidual: data })
+}))
 
 export const useSurveyCardStore = create<SurveyCard>((set) => ({
     surveyInfo: [] as SurveyInfo[],
@@ -49,7 +54,6 @@ export const useActionStore = create<Action>((set) => ({
     action: "",
     setAction: (action: string) => set({action: action})
 }))
-
 
 export const useDoForm = create<DoSurvey>((set) => ({
     survey: {} as Survey,

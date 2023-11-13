@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/store";
 import axios from "axios";
 import { z } from "zod";
+import instance from "../../service/api";
 
 const defaultTheme = createTheme();
 
@@ -67,10 +68,11 @@ const SignUp = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/register",
-        JSON.stringify(formValue)
-      );
+      const response = await instance({
+        url: "register",
+        method: "POST",
+        data: JSON.stringify(formValue)
+      })
       const { data } = await response;
       console.log(data);
       if (data.status === 200) {

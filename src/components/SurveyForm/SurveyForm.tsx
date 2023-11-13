@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./SurveyForm.module.scss";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { Question, SurveyProp } from "../../types/survey";
@@ -13,10 +13,10 @@ import {
   filterDataToUpdateSurvey,
   filterGetSelectedId,
 } from "../../utils/helpers";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CREATE, DO, EDIT } from "../../constants/constant";
 import BasicPopover from "../shares/Popover";
+import instance from "../../service/api";
 
 const cx = classNames.bind(styles);
 
@@ -107,15 +107,11 @@ const SurveyForm = () => {
     console.log(updatedRecord);
     
     try {
-      const token = localStorage.getItem("token") ?? "";
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/survey/do-form",
-        JSON.stringify(updatedRecord),{
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await instance({
+        url: "survey/do-form",
+        method: "POST",
+        data: JSON.stringify(updatedRecord)
+      })
       if (response.data.status === 200) {
         alert("Completed survey");
         navigate("/");
@@ -131,15 +127,11 @@ const SurveyForm = () => {
     const data = filterDataToCreateSurvey(surveyInfo, questions, user);
 
     try {
-      const token = localStorage.getItem("token") ?? "";
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/survey/create",
-        JSON.stringify(data), {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await instance({
+        url: "survey/create",
+        method: "POST",
+        data: JSON.stringify(data)
+      })
       if (response.data.status === 200) {
         alert("Create survey successfully");
         navigate("/");
@@ -155,16 +147,11 @@ const SurveyForm = () => {
     const data = filterDataToUpdateSurvey(surveyInfo, questions);
 
     try {
-      const token = localStorage.getItem("token") ?? "";
-
-      const response = await axios.put(
-        "http://localhost:8080/api/v1/survey/edit",
-        JSON.stringify(data), {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await instance({
+        url: "survey/edit",
+        method: "PUT",
+        data: JSON.stringify(data)
+      })
       if (response.data.status === 200) {
         alert("Update survey successfully");
         navigate("/");

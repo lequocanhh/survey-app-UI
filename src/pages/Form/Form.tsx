@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import SurveyForm from "../../components/SurveyForm/SurveyForm";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useActionStore, useDoForm } from "../../store/store";
 import { DO, EDIT } from "../../constants/constant";
+import instance from "../../service/api";
 
 const Form = () => {
   const { id } = useParams();
@@ -13,14 +13,10 @@ const Form = () => {
 
   const getSurveyDetail = async (param: string) => {
     try {
-      const token = localStorage.getItem("token") ?? "";
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/survey/${param}/${id}`,{
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await instance({
+        url: `survey/${param}/${id}`,
+        method: "GET",
+      })
       const { data } = await response.data;
       
       setSurvey(data);

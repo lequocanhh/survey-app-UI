@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
-import axios from "axios";
 import { useParams } from "react-router-dom";
+import instance from "../../service/api";
 
 
 export type Option = {
@@ -47,14 +47,10 @@ const Statistic = () => {
 
   const getStatisticSurveyDetail = async () => {
     try {
-      const token = localStorage.getItem("token") ?? "";
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/form/statistic/${id}`,{
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-      );
+      const response = await instance({
+        url: `form/statistic/${id}`,
+        method: "GET",
+      })
       const { data, status } = await response.data;
 
       if (status === 200) {

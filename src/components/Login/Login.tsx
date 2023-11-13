@@ -15,6 +15,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/store";
 import { z } from "zod";
+import instance from "../../service/api";
 
 const defaultTheme = createTheme();
 
@@ -54,10 +55,11 @@ const Login = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/login",
-        JSON.stringify(formValue)
-      );
+      const response = await instance({
+        url: "login",
+        method: "POST",
+        data: JSON.stringify(formValue)
+      })
       if (response.data.status === 200) {
         const {
           data: { data },
