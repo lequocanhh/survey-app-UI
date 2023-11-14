@@ -44,17 +44,17 @@ export const filterDataToUpdateSurvey = (surveyInfo: SurveyProp, questions: Ques
 type CheckValidationProps = {
   surveyInfo: SurveyProp,
   questions: Question[],
-  setSurveyValidationErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>,
-  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLButtonElement | null>>,
-  event: React.MouseEvent<HTMLButtonElement>
+  setSurveyValidationErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>
 }
+
+const hasMinimumOptions = (question: Question): boolean => {
+  return question.options.length >= 2;
+};
 
 export const checkIfAllValidated = ({
   surveyInfo,
   questions,
   setSurveyValidationErrors,
-  setAnchorEl,
-  event
 }: CheckValidationProps) => {
 
   const surveySchema = z.object({
@@ -79,6 +79,14 @@ export const checkIfAllValidated = ({
   const validationSurvey = surveySchema.safeParse(surveyInfo);
   const validationQuestion = questionsSchema.safeParse(questions);
   const validationOption = optionsSchema.safeParse(questions.flatMap(question => question.options));
+  const areOptionsValid = questions.every(hasMinimumOptions);
+  if (!areOptionsValid) {
+    setSurveyValidationErrors({
+      options: "Each question must have at least 2 options",
+    });
+    return false;
+  }
+
 
   if (!validationSurvey.success) {
     const errors: Record<string, string> = {};
@@ -88,7 +96,6 @@ export const checkIfAllValidated = ({
       }
     });
     setSurveyValidationErrors(errors);
-    setAnchorEl(event.currentTarget);
     return false;
   }
 
@@ -100,7 +107,6 @@ export const checkIfAllValidated = ({
       }
     });
     setSurveyValidationErrors(errors);
-    setAnchorEl(event.currentTarget);
     return false;
   }
 
@@ -112,7 +118,6 @@ export const checkIfAllValidated = ({
       }
     });
     setSurveyValidationErrors(errors);
-    setAnchorEl(event.currentTarget);
     return false;
   }
 

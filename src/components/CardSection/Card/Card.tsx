@@ -14,7 +14,7 @@ import Popover from "@mui/material/Popover";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { MouseEvent, useState } from "react";
-import { useActionStore, useAlert, useAuthStore, useSurveyCardStore, useSurveyIndividualStore } from "../../../store/store";
+import { useActionStore, useAlert, useAuthStore, useSurveyIndividualStore } from "../../../store/store";
 import { EDIT } from "../../../constants/constant";
 import { useNavigate } from "react-router-dom";
 import BarChartIcon from '@mui/icons-material/BarChart';

@@ -15,7 +15,6 @@ import {
 } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
 import { CREATE, DO, EDIT } from "../../constants/constant";
-import BasicPopover from "../shares/Popover";
 import instance from "../../service/api";
 
 const cx = classNames.bind(styles);
@@ -25,7 +24,6 @@ const SurveyForm = () => {
   const { action } = useActionStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { setAlert } = useAlert()
 
   const [surveyValidationErrors, setSurveyValidationErrors] = useState<
@@ -123,8 +121,8 @@ const SurveyForm = () => {
     }
   };
 
-  const handleSubmitCreateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+  const handleSubmitCreateSurvey = async (): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors});
     if(!validated) return;
     const data = filterDataToCreateSurvey(surveyInfo, questions, user);
 
@@ -145,8 +143,8 @@ const SurveyForm = () => {
     }
   };
 
-  const handleSubmitUpdateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+  const handleSubmitUpdateSurvey = async (): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors});
     if(!validated) return;
     const data = filterDataToUpdateSurvey(surveyInfo, questions);
 
@@ -157,6 +155,7 @@ const SurveyForm = () => {
         data: JSON.stringify(data)
       })
       if (response.data.status === 200) {
+        
         setAlert(true, response.data.message, 'success')
         setTimeout(() => {
           navigate("/");
