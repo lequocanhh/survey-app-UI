@@ -6,6 +6,7 @@
     margin-right: 20px;
     cursor: pointer;
     border: 1px solid transparent;
+    z-index: 100;
     
     &:hover{
         border: 1px solid #6E2594;
@@ -15,7 +16,6 @@
 .image{
     box-sizing: border-box;
     height: 150px;
-    width: 250px;
     background-color: blue;
 }
 
@@ -26,12 +26,16 @@
     padding: 0 8px;
     font-size: 12px;
     color: grey;
+    border: 0.5px solid rgb(206, 194, 194);
 
     > h4{
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         display: block;
+        color: black;
+        font-weight: 700;
+        margin-left: 4px;
     }
 
     .more-info{
@@ -62,3 +66,6 @@
 
 
 }
+.parent-container {
+    pointer-events: none;
+  }

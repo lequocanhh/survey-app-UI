@@ -12,6 +12,7 @@ type Prop = {
 };
 
 const ToolBar = ({ question, questions, setQuestion, indexQuestion }: Prop) => {
+  
   const handleCopyQuestion = () => {
     const copiedQuestion = [...questions];
     const newQuestion = { ...copiedQuestion[indexQuestion] };
@@ -35,16 +36,15 @@ const ToolBar = ({ question, questions, setQuestion, indexQuestion }: Prop) => {
 
   return (
     <>
-      <IconButton>
-        <ContentCopyIcon onClick={handleCopyQuestion} />
+      <IconButton onClick={handleCopyQuestion}>
+        <ContentCopyIcon  />
       </IconButton>
-      <IconButton>
-        <DeleteIcon onClick={handleDeleteQuestion} />
+      <IconButton onClick={handleDeleteQuestion}>
+        <DeleteIcon  />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={handleRequiredQuestion}>
         <span style={{ color: "#5f6368", fontSize: "13px" }}>Required</span>
         <Switch
-          onClick={handleRequiredQuestion}
           name="checkedA"
           color="primary"
           checked={question.required}

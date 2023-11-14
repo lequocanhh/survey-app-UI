@@ -45,7 +45,9 @@
     }
   }
 
-  .add_border {
-    border-left: 6px solid #4285f4;
+  .btn-bottom{
+    display: flex;
+    justify-content: space-between;
   }
+
 }

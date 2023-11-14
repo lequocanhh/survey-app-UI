@@ -37,5 +37,10 @@
     .individual{
         display: flex;
         align-items: center;
+        
+        .info{
+            margin-right: 2px;
+            display: flex;
+        }
     }
 }
