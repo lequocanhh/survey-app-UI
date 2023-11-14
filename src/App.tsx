@@ -5,6 +5,7 @@ import Login from "./components/Login/Login"
 import SignUp from "./components/SignUp/SignUp"
 import PrivateRoutes from "./utils/PrivateRoutes"
 import Statistic from "./pages/Statistic/Statistic"
+import CustomizedSnackbars from "./components/shares/Alert"
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path='/signup' element={<SignUp/>}/>
           </Routes>  
     </BrowserRouter>
+    <CustomizedSnackbars/>
     </>
   )
 }
