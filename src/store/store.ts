@@ -31,6 +31,15 @@ type Action = {
     setAction: (action: string) => void
 }
 
+type Color = 'success' | 'error' | 'warning' | 'info';
+
+type Alert = {
+    alert: boolean,
+    message: string,
+    severity: Color,
+    setAlert: (isAlert: boolean, message: string, severity: Color) => void
+}
+
 
 export const useAuthStore = create<Authen>((set) => ({
     user: {} as User,
@@ -58,4 +67,11 @@ export const useActionStore = create<Action>((set) => ({
 export const useDoForm = create<DoSurvey>((set) => ({
     survey: {} as Survey,
     setSurvey: (data: any) => set({survey: data})
+}))
+
+export const useAlert = create<Alert>((set) => ({
+    alert: false,
+    message: "",
+    severity: 'success',
+    setAlert: (isAlert: boolean, message: string, severity: Color) => set({alert: isAlert, message, severity: severity})
 }))

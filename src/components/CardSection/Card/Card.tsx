@@ -14,7 +14,7 @@ import Popover from "@mui/material/Popover";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { MouseEvent, useState } from "react";
-import { useActionStore, useAuthStore, useSurveyCardStore } from "../../../store/store";
+import { useActionStore, useAlert, useAuthStore, useSurveyIndividualStore } from "../../../store/store";
 import { EDIT } from "../../../constants/constant";
 import { useNavigate } from "react-router-dom";
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -31,7 +31,8 @@ const Card = ({ survey, index }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { setAction } = useActionStore();
   const { user } = useAuthStore()
-  const { surveyInfo, setSurveyCard } = useSurveyCardStore();
+  const { setAlert } = useAlert()
+  const { surveyInvidual, setSurveyIndividual } = useSurveyIndividualStore()
   const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
@@ -65,9 +66,10 @@ const Card = ({ survey, index }: Props) => {
         method: "DELETE"
       })
       if (response.data.status === 200) {
-        alert("delete survey successfully");
-        setSurveyCard(
-          surveyInfo.filter((item) => {
+        setAlert(true, response.data.message, 'success')
+
+        setSurveyIndividual(
+          surveyInvidual.filter((item) => {
             return item.id !== survey.id;
           })
         );

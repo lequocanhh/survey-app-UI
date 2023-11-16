@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { Question, SurveyProp } from "../../types/survey";
-import { useActionStore, useAuthStore, useDoForm } from "../../store/store";
+import { useActionStore, useAlert, useAuthStore, useDoForm } from "../../store/store";
 import QuestionItem from "./QuestionItem/QuestionItem";
 import { AddCircleOutline } from "@mui/icons-material";
 import {
@@ -15,7 +15,6 @@ import {
 } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
 import { CREATE, DO, EDIT } from "../../constants/constant";
-import BasicPopover from "../shares/Popover";
 import instance from "../../service/api";
 
 const cx = classNames.bind(styles);
@@ -25,7 +24,7 @@ const SurveyForm = () => {
   const { action } = useActionStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { setAlert } = useAlert()
 
   const [surveyValidationErrors, setSurveyValidationErrors] = useState<
     Record<string, string>
@@ -67,7 +66,7 @@ const SurveyForm = () => {
       };
       setQuestion([...questions, newQuestion]);
     } else {
-      alert("You must be have more than 1 option and not empty title");
+      setAlert(true, "You must be have more than 1 option and not empty title", 'warning')
     }
   };
 
@@ -104,7 +103,6 @@ const SurveyForm = () => {
       survey_id: survey.id,
       ids: filterGetSelectedId(questions),
     };
-    console.log(updatedRecord);
     
     try {
       const response = await instance({
@@ -113,16 +111,18 @@ const SurveyForm = () => {
         data: JSON.stringify(updatedRecord)
       })
       if (response.data.status === 200) {
-        alert("Completed survey");
-        navigate("/");
+        setAlert(true, response.data.message, 'success')
+        setTimeout(() => {
+          navigate("/");
+        }, 1000)
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSubmitCreateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+  const handleSubmitCreateSurvey = async (): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors});
     if(!validated) return;
     const data = filterDataToCreateSurvey(surveyInfo, questions, user);
 
@@ -133,16 +133,18 @@ const SurveyForm = () => {
         data: JSON.stringify(data)
       })
       if (response.data.status === 200) {
-        alert("Create survey successfully");
-        navigate("/");
+        setAlert(true, response.data.message, 'success')
+        setTimeout(() => {
+          navigate("/");
+        }, 1000)
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSubmitUpdateSurvey = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors, setAnchorEl, event});
+  const handleSubmitUpdateSurvey = async (): Promise<void> => {
+    const validated = checkIfAllValidated({surveyInfo, questions, setSurveyValidationErrors});
     if(!validated) return;
     const data = filterDataToUpdateSurvey(surveyInfo, questions);
 
@@ -153,8 +155,11 @@ const SurveyForm = () => {
         data: JSON.stringify(data)
       })
       if (response.data.status === 200) {
-        alert("Update survey successfully");
-        navigate("/");
+        
+        setAlert(true, response.data.message, 'success')
+        setTimeout(() => {
+          navigate("/");
+        }, 1000)
       }
     } catch (error) {
       console.log(error);
@@ -167,6 +172,12 @@ const SurveyForm = () => {
     }
   }, [action, survey]);
 
+  useEffect(() => {
+    if(Object.values(surveyValidationErrors)[0]){
+      setAlert(true, Object.values(surveyValidationErrors)[0], 'error')
+    }
+  }, [surveyValidationErrors])
+
   const questionUI = () => {
     return questions.map((question, index) => (
       <QuestionItem
@@ -177,6 +188,7 @@ const SurveyForm = () => {
       />
     ));
   };
+
 
   return (
     <div>
@@ -260,11 +272,6 @@ const SurveyForm = () => {
             </div>
           )}
         </div>
-        <BasicPopover
-          anchorEl={anchorEl}
-          setAnchorEl={setAnchorEl}
-          surveyValidationErrors={surveyValidationErrors}
-        />
       </div>
     </div>
   );

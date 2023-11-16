@@ -4,80 +4,78 @@ import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import { useParams } from "react-router-dom";
 import instance from "../../service/api";
 
-
 export type Option = {
-    title: string;
-    selected: boolean;
-    id: string;
-    chooser: number;
-    question_id: string;
-  };
-  
-  export type Question = {
-    title: string;
-    options: Option[];
-    required?: boolean;
-    open?: boolean;
-  };
+  title: string;
+  selected: boolean;
+  id: string;
+  chooser: number;
+  question_id: string;
+};
+
+export type Question = {
+  title: string;
+  options: Option[];
+  required?: boolean;
+  open?: boolean;
+};
 
 type SurveyStatistic = {
-    id: string,
-    title: string,
-    description: string,
-    participant: string,
-    created_by: string,
-    created_at: string,
-    questions: Question[]
-}
+  id: string;
+  title: string;
+  description: string;
+  participant: string;
+  created_by: string;
+  created_at: string;
+  questions: Question[];
+};
 
 type PieOption = {
-    name: string,
-    value: number
-}
+  name: string;
+  value: number;
+};
 
 type PieQuestion = {
-    question: string,
-    options: PieOption[],
-}
+  question: string;
+  options: PieOption[];
+};
 
 const Statistic = () => {
   const { id } = useParams();
-  const [survey, setSurvey] = useState<SurveyStatistic>({} as SurveyStatistic)
-  const [data, setData] = useState<PieQuestion[]>([])
+  const [survey, setSurvey] = useState<SurveyStatistic>({} as SurveyStatistic);
+  const [data, setData] = useState<PieQuestion[]>([]);
 
   const getStatisticSurveyDetail = async () => {
     try {
       const response = await instance({
         url: `form/statistic/${id}`,
         method: "GET",
-      })
+      });
       const { data, status } = await response.data;
 
       if (status === 200) {
-          setSurvey(data);
+        setSurvey(data);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  
+  useEffect(() => {
+    getStatisticSurveyDetail();
+  }, []);
 
   useEffect(() => {
-    getStatisticSurveyDetail()
-  }, [])
-
-  useEffect(() => {
-   const data = survey.questions && survey.questions.map((question) => ({
+    const data =
+      survey.questions &&
+      survey.questions.map((question) => ({
         question: question.title,
         options: question.options.map((option) => ({
           name: option.title,
           value: (option.chooser / parseInt(survey.participant)) * 100,
         })),
       }));
-      setData(data)
-  }, [survey])
-  
+    setData(data);
+  }, [survey]);
 
   return (
     <div>
@@ -87,64 +85,67 @@ const Statistic = () => {
       <Typography paragraph color="green">
         {`The total number of survey participants: ${survey.participant}`}
       </Typography>
-      <Typography variant="h3">
-        {survey.title}
-      </Typography>
-      <Typography paragraph>
-        {survey.description}
-      </Typography>
+      <Card
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h4">{survey.title}</Typography>
+        <Typography paragraph>{survey.description}</Typography>
+      </Card>
 
-      {Array.isArray(data) && data.map((question: PieQuestion) => (
-        <Card
-          key={question.question}
-          sx={{
-            marginBottom: "16px",
-            borderRadius: "8px",
-            transition: "box-shadow 0.3s ease-in-out",
-            ":hover": {
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-            },
-          }}
-          variant="outlined"
-        >
-          <CardContent
+      {Array.isArray(data) &&
+        data.map((question: PieQuestion) => (
+          <Card
+            key={question.question}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              marginBottom: "16px",
+              borderRadius: "8px",
+              transition: "box-shadow 0.3s ease-in-out",
+              ":hover": {
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+              },
             }}
+            variant="outlined"
           >
-            <Typography variant="h6" sx={{ margin: "20px 0" }}>
-              {question.question}
-            </Typography>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6" sx={{ margin: "20px 0" }}>
+                {question.question}
+              </Typography>
 
-            <PieChart width={400} height={280}>
-              <Pie 
-                dataKey={"value"}
-                data={question.options}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                fill="#8884d8"
-                label
-              >
-                {question.options.map((entry, index) => (
-                  <Cell
-                  
-                    key={`cell-${index}`}
-                    fill={`hsl(${Math.random() * 360}, 50%, 50%, 0.9)`}
-                  />
-                ))}
-              </Pie >
-              <Tooltip />
-            
-              <Legend style={{display: "flex", flexDirection: "column"}}/>
+              <PieChart width={400} height={280}>
+                <Pie
+                  dataKey={"value"}
+                  data={question.options}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  label
+                >
+                  {question.options.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={`hsl(${Math.random() * 360}, 50%, 50%, 0.9)`}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
 
-              
-            </PieChart>
-          </CardContent>
-        </Card>
-      ))}
+                <Legend style={{ display: "flex", flexDirection: "column" }} />
+              </PieChart>
+            </CardContent>
+          </Card>
+        ))}
     </div>
   );
 };

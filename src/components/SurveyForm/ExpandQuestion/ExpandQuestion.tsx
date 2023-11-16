@@ -57,7 +57,6 @@ const ExpandQuestion = ({
           option={option}
           indexOption={j}
           indexQuestion={indexQuestion}
-          questions={questions}
           setQuestion={setQuestion}
         />
       ))}

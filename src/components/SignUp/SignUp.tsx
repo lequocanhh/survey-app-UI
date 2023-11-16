@@ -10,16 +10,17 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../store/store";
-import axios from "axios";
+import { useAlert, useAuthStore } from "../../store/store";
 import { z } from "zod";
 import instance from "../../service/api";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
 const SignUp = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { setAlert } = useAlert()
 
   const formSchema = z
     .object({
@@ -68,14 +69,14 @@ const SignUp = () => {
       return;
     }
     try {
-      const response = await instance({
-        url: "register",
-        method: "POST",
-        data: JSON.stringify(formValue)
-      })
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/register",
+        JSON.stringify(formValue)
+      );
       const { data } = await response;
       console.log(data);
       if (data.status === 200) {
+        setAlert(true, data.message, 'success')
         navigate("/login");
       }
     } catch (error) {

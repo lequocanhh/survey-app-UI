@@ -14,7 +14,7 @@ const Form = () => {
   const getSurveyDetail = async (param: string) => {
     try {
       const response = await instance({
-        url: `survey/${param}/${id}`,
+        url: `survey/${param}/${id}`, 
         method: "GET",
       })
       const { data } = await response.data;

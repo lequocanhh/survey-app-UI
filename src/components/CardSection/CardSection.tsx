@@ -17,6 +17,7 @@ const CardSection = () => {
     setAction(DO);
     navigate(`/do-form/${id}`)
   }
+console.log(surveyInvidual);
 
   return (
     <>
@@ -40,7 +41,7 @@ const CardSection = () => {
         <span>Individual</span>
       </div>
       <div className={cx("card-list")}>
-        {surveyInfo &&
+        {surveyInvidual &&
           surveyInvidual.map((item, index) => (
             <div key={item.id} onClick={() => handleDetailSurveyCard(item.id)}>
               <Card survey={item} index={index} />

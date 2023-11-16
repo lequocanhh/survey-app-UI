@@ -12,7 +12,6 @@ type Props = {
   option: OptionProp;
   indexOption: number;
   indexQuestion: number;
-  questions: Question[];
   setQuestion: React.Dispatch<React.SetStateAction<Question[]>>;
 };
 
@@ -20,7 +19,6 @@ const Option = ({
   option,
   indexOption,
   indexQuestion,
-  questions,
   setQuestion,
 }: Props) => {
 

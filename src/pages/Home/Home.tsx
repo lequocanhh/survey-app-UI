@@ -4,6 +4,7 @@ import Header from "../../components/Header/Header";
 import Template from "../../components/Template/Template";
 import { useAuthStore, useSurveyCardStore, useSurveyIndividualStore } from "../../store/store";
 import instance from "../../service/api";
+import { SurveyInfo } from "../../types/survey";
 
 const Home = () => {
   const { setSurveyCard } = useSurveyCardStore();
@@ -17,7 +18,9 @@ const Home = () => {
         method: "GET"
       })
       const { data } = await response.data;
-      setSurveyCard(data);
+      setSurveyCard(data.filter((item: SurveyInfo) => {
+        return item.created_by !== user.id
+      }));
     } catch (error) {
       console.log(error);
     }
